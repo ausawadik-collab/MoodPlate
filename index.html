@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodPlate - มื้ออาหารฮีลใจตามสภาวะอารมณ์</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Prompt & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF5EF',
+                        cardBg: '#FFFFFF',
+                        peach: '#E07A5F',
+                        peachHover: '#D0694E',
+                        sage: '#81B29A',
+                        sageHover: '#6FA189',
+                        slateDark: '#3D405B',
+                        yellowWarm: '#F2CC8F',
+                        softGray: '#F4F1DE'
+                    },
+                    fontFamily: {
+                        prompt: ['Prompt', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #FAF5EF;
+            color: #3D405B;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-light {
+            animation: pulseLight 2s infinite;
+        }
+        @keyframes pulseLight {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+    </style>
+</head>
+<body class="bg-cream text-slateDark min-h-screen flex flex-col justify-between selection:bg-peach selection:text-white">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-cream/90 backdrop-blur-md border-b border-sage/20 transition-all">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 font-bold text-2xl text-peach tracking-wide">
+                <span class="text-3xl">🍽️</span> MoodPlate
+            </a>
+            <nav class="hidden md:flex items-center gap-8 font-medium text-slateDark/80">
+                <a href="#quiz" class="hover:text-peach transition-colors">วิเคราะห์อารมณ์</a>
+                <a href="#menu" class="hover:text-peach transition-colors">เมนูทั้งหมด</a>
+                <a href="#giftbox" class="hover:text-peach transition-colors">Mood Gift Box</a>
+                <a href="#about" class="hover:text-peach transition-colors">โภชนาการฮีลใจ</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <button onclick="openCart()" class="relative bg-white border border-sage/30 text-slateDark p-2.5 px-4 rounded-full shadow-sm hover:border-peach transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping text-peach"></i>
+                    <span class="font-semibold text-sm hidden sm:inline">ตะกร้า</span>
+                    <span id="cart-badge" class="bg-peach text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-12 md:py-20 px-4">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6 text-center md:text-left">
+                <span class="inline-block bg-sage/20 text-sageHover font-medium text-sm px-4 py-1.5 rounded-full border border-sage/30">
+                    🌿 Pure Online & Direct-to-Consumer
+                </span>
+                <h1 class="text-3xl md:text-5xl font-bold leading-tight text-slateDark">
+                    มื้ออาหารฮีลใจ <br class="hidden sm:inline">
+                    <span class="text-peach underline decoration-yellowWarm decoration-4">สั่งได้ตามสภาวะอารมณ์</span>
+                </h1>
+                <p class="text-base md:text-lg text-slateDark/70 max-w-lg leading-relaxed">
+                    ตัดความลังเลในวันเหนื่อยล้า... ทำ Web Quiz 3 ข้อ เพื่อรับเซตโภชนาการกระตุ้น Serotonin & Dopamine พร้อมการ์ดฮีลใจ Custom ถึงคุณโดยเฉพาะ
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-2">
+                    <a href="#quiz" class="w-full sm:w-auto bg-peach text-white font-medium text-lg px-8 py-3.5 rounded-2xl shadow-lg hover:bg-peachHover hover:shadow-xl transition-all transform hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+                        <span>เริ่มวิเคราะห์อารมณ์</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="#menu" class="w-full sm:w-auto bg-white border-2 border-sage/40 text-slateDark font-medium text-lg px-6 py-3.5 rounded-2xl hover:bg-softGray transition-all text-center">
+                        ดูเมนูทั้งหมด
+                    </a>
+                </div>
+                <div class="pt-4 flex items-center justify-center md:justify-start gap-6 text-xs text-slateDark/60">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-sage"></i> ไม่ต้องเลือกรายเมนู</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-sage"></i> งานวิจัยรองรับ</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-sage"></i> ส่งด่วนใน 45 นาที</span>
+                </div>
+            </div>
+            <div class="relative flex justify-center">
+                <div class="absolute -inset-4 bg-gradient-to-r from-yellowWarm/30 to-peach/20 rounded-3xl blur-2xl -z-10"></div>
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-sage/20 max-w-md w-full relative">
+                    <div class="absolute -top-4 -right-4 bg-yellowWarm text-slateDark font-bold text-xs px-3 py-1.5 rounded-full shadow-md rotate-6">
+                        ✨ Best Seller Today
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80" alt="Mood Food Set" class="w-full h-56 object-cover rounded-2xl mb-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-peach/10 text-peach font-semibold text-xs px-2.5 py-1 rounded-md">Serotonin Boost</span>
+                            <span class="text-slateDark/50 text-xs">฿190 / Set</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-slateDark">Serotonin Hug Set 💖</h3>
+                        <p class="text-xs text-slateDark/70">ดาร์กช็อกโกแลตทาร์ต 70% + ชาคาโมมายล์น้ำผึ้งแท้ ช่วยลดฮอร์โมน คอร์ติซอล จากความเครียด</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="py-16 px-4 bg-white/70 backdrop-blur-sm border-y border-sage/20">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-8">
+                <span class="text-xs uppercase font-bold tracking-widest text-peach bg-peach/10 px-3 py-1 rounded-full">Interactive Experience</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-slateDark mt-2">วิเคราะห์อารมณ์ของคุณใน 3 ข้อ</h2>
+                <p class="text-sm text-slateDark/60 mt-1">เลือกรู้สึกที่คุณเป็นตอนนี้ เพื่อให้ระบบจัดมื้ออาหารและข้อความฮีลใจที่ตรงจุด</p>
+            </div>
+
+            <!-- Quiz Card Container -->
+            <div class="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-sage/30 relative min-h-[420px] flex flex-col justify-between">
+                
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-xs text-slateDark/60 mb-2 font-medium">
+                        <span id="quiz-progress-text">คำถามที่ 1 จาก 3</span>
+                        <span id="quiz-progress-percent">33%</span>
+                    </div>
+                    <div class="w-full bg-softGray h-2.5 rounded-full overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-peach h-full w-1/3 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Mood & Energy -->
+                <div id="q-step-1" class="quiz-step animate-fade-in space-y-4">
+                    <h3 class="text-lg md:text-xl font-bold text-slateDark text-center mb-4">
+                        1. วันนี้สภาวะพลังงานและอารมณ์ของคุณเป็นอย่างไรมากที่สุด? 🔋
+                    </h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="selectAnswer(1, 'exhausted')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🪫</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">หมดแรง / สมองล้าจากการเรียน-ทำงาน</div>
+                                    <div class="text-xs text-slateDark/60">ต้องการฟื้นฟูสมาธิและความสดชื่นทันที</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                        <button onclick="selectAnswer(1, 'anxious')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">กระวนกระวาย / ตึงเครียดสะสม</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">ตึงเครียด / วิตกกังวลใจ</div>
+                                    <div class="text-xs text-slateDark/60">ต้องการการผ่อนคลายและลดระดับฮอร์โมนความเครียด</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                        <button onclick="selectAnswer(1, 'sad')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🌧️</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">ดิ่งๆ / รู้สึกท้อแท้ อกหัก หรือเหงา</div>
+                                    <div class="text-xs text-slateDark/60">ต้องการการโอบกอด พลังบวก และกอดอุ่นๆ ทางใจ</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Healing Experience -->
+                <div id="q-step-2" class="quiz-step hidden animate-fade-in space-y-4">
+                    <h3 class="text-lg md:text-xl font-bold text-slateDark text-center mb-4">
+                        2. สภาพจิตใจตอนนี้ อยากได้รับการดูแลผ่านรสชาติแบบไหน? 😋
+                    </h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="selectAnswer(2, 'sweet')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🍰</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">ของหวานเข้มข้น เติม Serotonin</div>
+                                    <div class="text-xs text-slateDark/60">ดาร์กช็อกโกแลต หรือเบเกอรี่หวานกำลังดี</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                        <button onclick="selectAnswer(2, 'relax')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🍵</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">เครื่องดื่มละมุน ผ่อนคลายสมอง</div>
+                                    <div class="text-xs text-slateDark/60">ชาสมุนไพร คาโมมายล์ หรือมัทฉะกลมกล่อม</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                        <button onclick="selectAnswer(2, 'crunch')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🥜</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">ของเคี้ยวกรุบกรอบ เพิ่ม Dopamine</div>
+                                    <div class="text-xs text-slateDark/60">ถั่วอบพรีเมียม สคอน หรือธัญพืชกรอบ</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Message Tone -->
+                <div id="q-step-3" class="quiz-step hidden animate-fade-in space-y-4">
+                    <h3 class="text-lg md:text-xl font-bold text-slateDark text-center mb-4">
+                        3. เลือกโทนข้อความฮีลใจที่คุณอยากอ่านมากที่สุดตอนนี้ 💌
+                    </h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="selectAnswer(3, 'encouraging')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">💪</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">"เธอทำเต็มที่แล้ว เก่งมากๆ แล้วนะ"</div>
+                                    <div class="text-xs text-slateDark/60">โทนชื่นชมและให้กำลังใจในความพยายาม</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                        <button onclick="selectAnswer(3, 'calming')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🍃</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">"พักสักแป๊บนะ โลกไม่ได้รีบขนาดนั้น"</div>
+                                    <div class="text-xs text-slateDark/60">โทนผ่อนคลาย ชวนปลดวางและพักสายตา</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                        <button onclick="selectAnswer(3, 'inspiring')" class="quiz-opt-btn group p-4 border-2 border-softGray hover:border-peach hover:bg-softGray/50 rounded-2xl text-left transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">✨</span>
+                                <div>
+                                    <div class="font-bold text-slateDark group-hover:text-peach">"พรุ่งนี้จะเป็นวันที่สดใสกว่าเดิมแน่นอน"</div>
+                                    <div class="text-xs text-slateDark/60">โทนสร้างพลังบวกและความหวังอันอบอุ่น</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slateDark/30 group-hover:text-peach"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Result Step -->
+                <div id="q-result" class="quiz-step hidden animate-fade-in space-y-6">
+                    <div class="text-center">
+                        <span class="bg-sage/20 text-sageHover font-bold text-xs px-3 py-1 rounded-full uppercase">Result Matched!</span>
+                        <h3 class="text-2xl font-bold text-slateDark mt-2">เมนูฮีลใจที่แมตช์กับคุณวันนี้</h3>
+                    </div>
+
+                    <div class="bg-softGray/60 border border-sage/30 rounded-2xl p-5 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-sage/20 pb-3">
+                            <div>
+                                <div id="res-menu-name" class="font-bold text-xl text-peach">...</div>
+                                <div id="res-menu-subtitle" class="text-xs text-slateDark/70">...</div>
+                            </div>
+                            <div id="res-menu-price" class="font-bold text-2xl text-slateDark">฿190</div>
+                        </div>
+
+                        <div>
+                            <div class="text-xs font-bold text-slateDark mb-1">🌿 วัตถุดิบและกลไกการฮีลใจ:</div>
+                            <p id="res-menu-ingredients" class="text-xs text-slateDark/80 leading-relaxed">...</p>
+                        </div>
+
+                        <!-- Customized Healing Card Preview -->
+                        <div class="bg-white p-4 rounded-xl border-2 border-dashed border-peach/40 space-y-2">
+                            <div class="flex justify-between items-center text-xs text-peach font-bold">
+                                <span>💌 การ์ดข้อความฮีลใจ Custom (พิมพ์แนบในกล่อง)</span>
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs font-semibold text-slateDark/70 whitespace-nowrap">ถึงคุณ:</label>
+                                <input type="text" id="recipient-name" value="คุณลูกค้าผู้เก่งกาจ" oninput="updateCardName()" class="w-full text-xs bg-softGray/50 border border-sage/30 rounded-md px-2 py-1 text-slateDark focus:outline-none focus:border-peach">
+                            </div>
+                            <p id="res-card-msg" class="text-sm italic text-slateDark/90 font-medium pt-1">"..."</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button onclick="addQuizToCart()" class="flex-1 bg-peach text-white font-bold py-3.5 px-6 rounded-xl hover:bg-peachHover transition-all flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>ใส่ตะกร้าสินค้า (฿<span id="btn-cart-price">190</span>)</span>
+                        </button>
+                        <button onclick="resetQuiz()" class="bg-white border border-slateDark/20 text-slateDark font-medium py-3.5 px-4 rounded-xl hover:bg-softGray transition-all text-xs">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> ทำควิซใหม่
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Showcase Section -->
+    <section id="menu" class="py-16 px-4">
+        <div class="max-w-6xl mx-auto space-y-10">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <span class="text-xs uppercase font-bold tracking-widest text-sage bg-sage/10 px-3 py-1 rounded-full">Pre-selected Sets</span>
+                <h2 class="text-3xl font-bold text-slateDark">เซตอาหารฮีลใจยอดนิยม</h2>
+                <p class="text-sm text-slateDark/60">คัดสรรโดยนักโภชนาการ พร้อมปรุงสดใหม่ส่งตรงจาก Cloud Kitchen</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Menu Item 1 -->
+                <div class="bg-white rounded-3xl p-5 shadow-lg border border-sage/20 flex flex-col justify-between hover:shadow-xl transition-all">
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80" alt="Serotonin Hug" class="w-full h-48 object-cover rounded-2xl">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-peach text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                                💖 Serotonin Boost
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slateDark">Serotonin Hug Set</h3>
+                            <p class="text-xs text-slateDark/60 mt-1">ดาร์กช็อกโกแลตทาร์ต 70% + ชาคาโมมายล์น้ำผึ้ง</p>
+                        </div>
+                        <div class="bg-softGray/50 p-3 rounded-xl text-xs space-y-1">
+                            <div class="font-bold text-slateDark/80">คุณประโยชน์:</div>
+                            <div class="text-slateDark/70">• มี L-Tryptophan กระตุ้นการสร้างสารความสุข</div>
+                            <div class="text-slateDark/70">• ผ่อนคลายความวิตกกังวลและลดฮอร์โมนความเครียด</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 mt-4 border-t border-sage/10">
+                        <span class="font-bold text-xl text-slateDark">฿190</span>
+                        <button onclick="addPresetToCart('Serotonin Hug Set', 190, 'ดาร์กช็อกโกแลตทาร์ต + ชาคาโมมายล์')" class="bg-peach text-white font-medium text-xs px-4 py-2.5 rounded-xl hover:bg-peachHover transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> เพิ่มลงตะกร้า
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Menu Item 2 -->
+                <div class="bg-white rounded-3xl p-5 shadow-lg border border-sage/20 flex flex-col justify-between hover:shadow-xl transition-all">
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=600&q=80" alt="Exam Booster" class="w-full h-48 object-cover rounded-2xl">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-sageHover text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                                🧠 Brain & Energy Charge
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slateDark">Exam Booster Set</h3>
+                            <p class="text-xs text-slateDark/60 mt-1">สคอนบลูเบอร์รี่อัลมอนด์ + มัทฉะเข้มข้น</p>
+                        </div>
+                        <div class="bg-softGray/50 p-3 rounded-xl text-xs space-y-1">
+                            <div class="font-bold text-slateDark/80">คุณประโยชน์:</div>
+                            <div class="text-slateDark/70">• อุดมด้วย L-Theanine & Omega-3 ฟื้นสมองล้า</div>
+                            <div class="text-slateDark/70">• ช่วยเพิ่มสมาธิ อ่านหนังสือ/ทำงานได้นานขึ้น</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 mt-4 border-t border-sage/10">
+                        <span class="font-bold text-xl text-slateDark">฿220</span>
+                        <button onclick="addPresetToCart('Exam Booster Set', 220, 'สคอนบลูเบอร์รี่อัลมอนด์ + มัทฉะเข้มข้น')" class="bg-peach text-white font-medium text-xs px-4 py-2.5 rounded-xl hover:bg-peachHover transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> เพิ่มลงตะกร้า
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Menu Item 3 -->
+                <div class="bg-white rounded-3xl p-5 shadow-lg border border-sage/20 flex flex-col justify-between hover:shadow-xl transition-all">
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80" alt="Dopamine Sunshine" class="w-full h-48 object-cover rounded-2xl">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-yellow-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                                ☀️ Dopamine Smile
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slateDark">Dopamine Sunshine Set</h3>
+                            <p class="text-xs text-slateDark/60 mt-1">บานอฟฟี่พายกล้วยหอม + นมถั่วเหลืองพรีเมียม</p>
+                        </div>
+                        <div class="bg-softGray/50 p-3 rounded-xl text-xs space-y-1">
+                            <div class="font-bold text-slateDark/80">คุณประโยชน์:</div>
+                            <div class="text-slateDark/70">• วิตามิน B6 สูงจากกล้วยหอมสังเคราะห์ Dopamine</div>
+                            <div class="text-slateDark/70">• เติมความสดชื่นและพลังบวกให้หัวใจยิ้มได้</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 mt-4 border-t border-sage/10">
+                        <span class="font-bold text-xl text-slateDark">฿180</span>
+                        <button onclick="addPresetToCart('Dopamine Sunshine Set', 180, 'บานอฟฟี่พายกล้วยหอม + นมถั่วเหลือง')" class="bg-peach text-white font-medium text-xs px-4 py-2.5 rounded-xl hover:bg-peachHover transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> เพิ่มลงตะกร้า
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gift Box Section -->
+    <section id="giftbox" class="py-16 px-4 bg-sage/10 border-y border-sage/20">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div class="space-y-4">
+                <span class="bg-yellowWarm text-slateDark font-bold text-xs px-3 py-1 rounded-full uppercase">Special Gift Edition</span>
+                <h2 class="text-3xl font-bold text-slateDark">Mood Gift Box 🎁</h2>
+                <p class="text-sm text-slateDark/70 leading-relaxed">
+                    กล่องของขวัญฮีลใจสำหรับส่งต่อความรู้สึกห่วงใยให้เพื่อน คนรัก หรือเพื่อนร่วมงานช่วงสอบ/ทำงานหนัก มาพร้อมริบบิ้น การ์ดเขียนมือ และ Aroma Tag กลิ่นผ่อนคลาย
+                </p>
+                <ul class="space-y-2 text-xs text-slateDark/80">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-sage"></i> ขนมเบเกอรี่ฮีลใจ 2 ชิ้น + เครื่องดื่มพรีเมียม 1 ขวด</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-sage"></i> การ์ดฮีลใจพิมพ์ข้อความ Custom ฟรี</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-sage"></i> แถมฟรี Aroma Tag กลิ่นผ่อนคลายในกล่อง</li>
+                </ul>
+                <div class="pt-2 flex items-center gap-4">
+                    <span class="text-2xl font-bold text-slateDark">฿450</span>
+                    <button onclick="addPresetToCart('Mood Gift Box (กล่องของขวัญฮีลใจ)', 450, 'กล่องของขวัญพร้อมการ์ด custom และ Aroma Tag')" class="bg-peach text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-peachHover transition-all shadow-md">
+                        สั่งซื้อ Gift Box
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80" alt="Mood Gift Box" class="rounded-3xl shadow-xl w-full max-w-md h-72 object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Nutrition Science Concept -->
+    <section id="about" class="py-16 px-4">
+        <div class="max-w-4xl mx-auto text-center space-y-8">
+            <div class="space-y-2">
+                <span class="text-xs uppercase font-bold tracking-widest text-peach bg-peach/10 px-3 py-1 rounded-full">Nutrition & Mood Science</span>
+                <h2 class="text-3xl font-bold text-slateDark">ทำไมอาหารของ MoodPlate ถึงช่วยฮีลใจได้จริง?</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                <div class="bg-white p-6 rounded-2xl border border-sage/20 space-y-2">
+                    <div class="text-3xl">🍫</div>
+                    <h4 class="font-bold text-slateDark">Serotonin Boost</h4>
+                    <p class="text-xs text-slateDark/70">วัตถุดิบอย่าง ดาร์กช็อกโกแลตแท้ และกล้วยหอม มี L-Tryptophan ซึ่งเป็นสารตั้งต้นในการสร้างฮอร์โมนแห่งความสุข</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-sage/20 space-y-2">
+                    <div class="text-3xl">🍵</div>
+                    <h4 class="font-bold text-slateDark">L-Theanine & GABA</h4>
+                    <p class="text-xs text-slateDark/70">ชาคาโมมายล์และมัทฉะเกรดพรีเมียม ช่วยคลื่นสมองเข้าสู่สภาวะ Alpha Wave รู้สึกสงบและมีสมาธิ</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-sage/20 space-y-2">
+                    <div class="text-3xl">💌</div>
+                    <h4 class="font-bold text-slateDark">Emotional Support</h4>
+                    <p class="text-xs text-slateDark/70">เพราะอารมณ์ไม่ได้ต้องการแค่สารอาหาร แต่ต้องการ "การถูกรับฟัง" การ์ดฮีลใจจึงถูกออกแบบมาเพื่อเติมพลังใจในทุกมื้อ</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Modal / Drawer -->
+    <div id="cart-modal" class="fixed inset-0 bg-slateDark/50 backdrop-blur-sm z-50 hidden transition-all flex justify-end">
+        <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto animate-fade-in">
+            <div>
+                <div class="flex items-center justify-between border-b border-sage/20 pb-4 mb-4">
+                    <h3 class="font-bold text-xl text-slateDark flex items-center gap-2">
+                        <i class="fa-solid fa-cart-shopping text-peach"></i> ตะกร้าสินค้าของคุณ
+                    </h3>
+                    <button onclick="closeCart()" class="text-slateDark/50 hover:text-slateDark text-xl">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items List -->
+                <div id="cart-items" class="space-y-4">
+                    <p class="text-center text-slateDark/50 text-sm py-8">ไม่มีสินค้าในตะกร้า</p>
+                </div>
+            </div>
+
+            <!-- Cart Summary & Checkout -->
+            <div class="border-t border-sage/20 pt-4 space-y-4 bg-white sticky bottom-0">
+                <div class="space-y-1 text-sm">
+                    <div class="flex justify-between text-slateDark/70">
+                        <span>ยอดรวมสินค้า:</span>
+                        <span id="subtotal-price">฿0</span>
+                    </div>
+                    <div class="flex justify-between text-slateDark/70">
+                        <span>ค่าจัดส่ง (ไรเดอร์ส่งด่วน):</span>
+                        <span class="text-sage font-medium">฿30</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold text-slateDark pt-2 border-t border-sage/10">
+                        <span>ราคารวมทั้งหมด:</span>
+                        <span id="total-price" class="text-peach">฿0</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <button onclick="processCheckoutLINE()" class="w-full bg-[#06C755] text-white font-bold py-3.5 rounded-xl hover:bg-[#05b34c] transition-all flex items-center justify-center gap-2 shadow-md">
+                        <i class="fa-brands fa-line text-xl"></i>
+                        <span>สั่งซื้อผ่าน LINE OA (ส่งออเดอร์)</span>
+                    </button>
+                    <button onclick="processPromptPay()" class="w-full bg-softGray text-slateDark font-medium py-2.5 rounded-xl hover:bg-slateDark/10 transition-all text-xs">
+                        💳 จำลองชำระเงินด้วย PromptPay QR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slateDark text-white/80 py-10 px-4 border-t border-sage/20">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs">
+            <div class="space-y-3">
+                <div class="text-2xl font-bold text-peach">🍽️ MoodPlate</div>
+                <p class="leading-relaxed text-white/60">
+                    แบรนด์ D2C มื้ออาหารฮีลใจตามสภาวะอารมณ์ ดำเนินงานแบบ Pure Online เพื่อส่งมอบโภชนาการและการดูแลใจที่ดีที่สุด
+                </p>
+            </div>
+            <div class="space-y-2">
+                <div class="font-bold text-white text-sm">ช่องทางการติดต่อ</div>
+                <p>📍 Cloud Kitchen: ย่านมหาวิทยาลัย/ศูนย์กลางเมือง</p>
+                <p>📲 LINE Official: @moodplate</p>
+                <p>📸 Instagram / TikTok: @moodplate.th</p>
+            </div>
+            <div class="space-y-2">
+                <div class="font-bold text-white text-sm">เวลาให้บริการจัดส่ง</div>
+                <p>เปิดรับออเดอร์: 09:00 - 20:00 น. ทุกวัน</p>
+                <p>จัดส่งด่วนโดย GrabExpress / LINE MAN Delivery</p>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto border-t border-white/10 mt-8 pt-4 text-center text-xs text-white/40">
+            © 2026 MoodPlate. Design Thinking & Business Model Project. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State variables
+        let quizAnswers = {
+            step1: '',
+            step2: '',
+            step3: ''
+        };
+
+        let currentQuizResult = null;
+        let cart = [];
+
+        // Quiz Step Selection
+        function selectAnswer(step, value) {
+            quizAnswers[`step${step}`] = value;
+
+            const currentElem = document.getElementById(`q-step-${step}`);
+            const nextStep = step + 1;
+            
+            // Update progress
+            const progressBar = document.getElementById('quiz-progress-bar');
+            const progressText = document.getElementById('quiz-progress-text');
+            const progressPercent = document.getElementById('quiz-progress-percent');
+
+            if (step < 3) {
+                currentElem.classList.add('hidden');
+                document.getElementById(`q-step-${nextStep}`).classList.remove('hidden');
+                
+                const percent = Math.round((nextStep / 3) * 100);
+                progressBar.style.width = `${percent}%`;
+                progressText.innerText = `คำถามที่ ${nextStep} จาก 3`;
+                progressPercent.innerText = `${percent}%`;
+            } else {
+                currentElem.classList.add('hidden');
+                calculateAndShowResult();
+                
+                progressBar.style.width = `100%`;
+                progressText.innerText = `เสร็จสิ้น`;
+                progressPercent.innerText = `100%`;
+            }
+        }
+
+        // Calculate Recommendation
+        function calculateAndShowResult() {
+            let menuName = "";
+            let menuSub = "";
+            let ingredients = "";
+            let cardMsg = "";
+            let price = 190;
+
+            // Decision Logic based on Q1
+            if (quizAnswers.step1 === 'exhausted') {
+                menuName = "Exam Booster & Brain Charge Set 🧠";
+                menuSub = "สคอนบลูเบอร์รี่อัลมอนด์ + มัทฉะเข้มข้นเข้มข้น";
+                ingredients = "มัทฉะเกรดพรีเมียมมี L-Theanine ช่วยเพิ่มสมาธิ ผสานกับถั่วอัลมอนด์ที่อุดมด้วย Omega-3 และวิตามิน E ฟื้นฟูเซลล์สมองล้าจากการอ่านหนังสือสอบและทำงานหนัก";
+                price = 220;
+            } else if (quizAnswers.step1 === 'anxious') {
+                menuName = "Serotonin Hug Set 💖";
+                menuSub = "ดาร์กช็อกโกแลตทาร์ต 70% + ชาคาโมมายล์น้ำผึ้งแท้";
+                ingredients = "ดาร์กช็อกโกแลตเข้มข้นกระตุ้นการหลั่ง Serotonin และสาร Flavonoid ลดฮอร์โมนความเครียด คอร์ติซอล คู่กับชาคาโมมายล์อุ่นๆ ช่วยผ่อนคลายความตึงเครียด";
+                price = 190;
+            } else {
+                menuName = "Dopamine Sunshine Set ☀️";
+                menuSub = "บานอฟฟี่พายกล้วยหอม + นมถั่วเหลืองออร์แกนิค";
+                ingredients = "กล้วยหอมอุดมด้วยวิตามิน B6 ช่วยในการสังเคราะห์ Dopamine สร้างความรู้สึกอบอุ่น ทานคู่กับนมถั่วเหลืองเสริมสร้างพลังบวกให้ใจฟู";
+                price = 180;
+            }
+
+            // Card Message Logic based on Q3
+            if (quizAnswers.step3 === 'encouraging') {
+                cardMsg = "“เธอทำเต็มที่แล้วนะวันนี้ เก่งมากๆ แล้ว พักทานขนมอร่อยๆ แล้วปล่อยให้ความเหนื่อยล้าค่อยๆ หายไปนะ”";
+            } else if (quizAnswers.step3 === 'calming') {
+                cardMsg = "“พักสักแป๊บนะ โลกไม่ได้รีบขนาดนั้น วันนี้ให้เวลาตัวเองได้ละเมียดความสุขตรงหน้าก็พอแล้ว”";
+            } else {
+                cardMsg = "“ทุกอย่างจะผ่านไปได้ด้วยดี พรุ่งนี้จะเป็นวันที่สดใสและใจดีกับเธอแน่นอน!”";
+            }
+
+            // Store current result
+            currentQuizResult = {
+                id: 'quiz-' + Date.now(),
+                name: menuName,
+                subtitle: menuSub,
+                price: price,
+                cardMsg: cardMsg,
+                recipient: document.getElementById('recipient-name').value || 'คุณลูกค้า'
+            };
+
+            // Render result UI
+            document.getElementById('res-menu-name').innerText = menuName;
+            document.getElementById('res-menu-subtitle').innerText = menuSub;
+            document.getElementById('res-menu-ingredients').innerText = ingredients;
+            document.getElementById('res-menu-price').innerText = `฿${price}`;
+            document.getElementById('btn-cart-price').innerText = price;
+            document.getElementById('res-card-msg').innerText = cardMsg;
+
+            document.getElementById('q-result').classList.remove('hidden');
+        }
+
+        function updateCardName() {
+            if (currentQuizResult) {
+                currentQuizResult.recipient = document.getElementById('recipient-name').value;
+            }
+        }
+
+        function resetQuiz() {
+            quizAnswers = { step1: '', step2: '', step3: '' };
+            currentQuizResult = null;
+
+            document.getElementById('q-result').classList.add('hidden');
+            document.getElementById('q-step-1').classList.remove('hidden');
+            
+            const progressBar = document.getElementById('quiz-progress-bar');
+            progressBar.style.width = `33%`;
+            document.getElementById('quiz-progress-text').innerText = `คำถามที่ 1 จาก 3`;
+            document.getElementById('quiz-progress-percent').innerText = `33%`;
+        }
+
+        // Cart Management
+        function addQuizToCart() {
+            if (!currentQuizResult) return;
+            
+            const item = {
+                id: currentQuizResult.id,
+                name: currentQuizResult.name,
+                details: `${currentQuizResult.subtitle} (การ์ดถึง: ${currentQuizResult.recipient})`,
+                cardMsg: currentQuizResult.cardMsg,
+                price: currentQuizResult.price,
+                qty: 1
+            };
+
+            cart.push(item);
+            updateCartUI();
+            openCart();
+        }
+
+        function addPresetToCart(name, price, details) {
+            const item = {
+                id: 'preset-' + Date.now(),
+                name: name,
+                details: details,
+                cardMsg: '“ทานให้อร่อยนะ ขอให้วันนี้เป็นวันที่ดีของคุณ!”',
+                price: price,
+                qty: 1
+            };
+
+            cart.push(item);
+            updateCartUI();
+            openCart();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cart-badge');
+            const cartContainer = document.getElementById('cart-items');
+            const subtotalElem = document.getElementById('subtotal-price');
+            const totalElem = document.getElementById('total-price');
+
+            badge.innerText = cart.length;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `<p class="text-center text-slateDark/50 text-sm py-8">ไม่มีสินค้าในตะกร้า</p>`;
+                subtotalElem.innerText = `฿0`;
+                totalElem.innerText = `฿0`;
+                return;
+            }
+
+            let subtotal = 0;
+            cartContainer.innerHTML = cart.map((item, idx) => {
+                subtotal += item.price * item.qty;
+                return `
+                    <div class="bg-softGray/50 p-3.5 rounded-xl border border-sage/20 flex justify-between items-start gap-2">
+                        <div class="space-y-1">
+                            <div class="font-bold text-sm text-slateDark">${item.name}</div>
+                            <div class="text-xs text-slateDark/60">${item.details}</div>
+                            <div class="text-xs text-peach font-semibold">฿${item.price}</div>
+                        </div>
+                        <button onclick="removeCartItem(${idx})" class="text-slateDark/40 hover:text-red-500 text-sm p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            const shipping = 30;
+            const total = subtotal + shipping;
+
+            subtotalElem.innerText = `฿${subtotal}`;
+            totalElem.innerText = `฿${total}`;
+        }
+
+        function openCart() {
+            document.getElementById('cart-modal').classList.remove('hidden');
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').classList.add('hidden');
+        }
+
+        // LINE OA Checkout Generator
+        function processCheckoutLINE() {
+            if (cart.length === 0) {
+                alert('กรุณาเลือกสินค้าลงในตะกร้าก่อนทำการสั่งซื้อครับ');
+                return;
+            }
+
+            let message = "📲 *สั่งซื้ออาหารฮีลใจ - MoodPlate*\n\n";
+            let total = 0;
+
+            cart.forEach((item, i) => {
+                message += `${i+1}. *${item.name}* (฿${item.price})\n`;
+                message += `   • รายละเอียด: ${item.details}\n`;
+                if(item.cardMsg) {
+                    message += `   • การ์ดฮีลใจ: ${item.cardMsg}\n`;
+                }
+                message += `\n`;
+                total += item.price;
+            });
+
+            const shipping = 30;
+            const grandTotal = total + shipping;
+
+            message += `------------------------------\n`;
+            message += `ยอดรวมสินค้า: ฿${total}\n`;
+            message += `ค่าจัดส่งด่วน: ฿${shipping}\n`;
+            message += `*ราคารวมสุทธิ: ฿${grandTotal}*\n`;
+            message += `------------------------------\n`;
+            message += `📌 กรุณาพิมพ์ชื่อ ที่อยู่จัดส่ง และเบอร์โทรศัพท์ เพื่อยืนยันออเดอร์ครับ`;
+
+            const encodedText = encodeURIComponent(message);
+            window.open(`https://line.me/R/oaMessage/@moodplate/?${encodedText}`, '_blank');
+        }
+
+        function processPromptPay() {
+            if (cart.length === 0) {
+                alert('กรุณาเลือกสินค้าลงในตะกร้าก่อนครับ');
+                return;
+            }
+            alert('ระบบจำลอง: กำลังสร้าง QR Code PromptPay สำหรับชำระเงิน... (โปรดกดสั่งซื้อผ่าน LINE OA เพื่อส่งออเดอร์จริง)');
+        }
+    </script>
+</body>
+</html>
